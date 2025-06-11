@@ -39,7 +39,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'simbrella_app',  # Added to INSTALLED_APPS instead of MIDDLEWARE
+    'rest_framework',
+    'rest_framework.authtoken',
+    'corsheaders', 
+    'simbrella_app', 
 ]
 
 MIDDLEWARE = [
@@ -81,7 +84,7 @@ DATABASES = {
         'USER': os.environ.get('DB_USER', 'simbrella_user'),
         'PASSWORD': os.environ.get('DB_PASSWORD', ''),
         'HOST': os.environ.get('DB_HOST', 'localhost'),
-        'PORT': os.environ.get('DB_PORT', '5432'),  # Fixed port number
+        'PORT': os.environ.get('DB_PORT', '5432'),
     }
 }
 
@@ -118,6 +121,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
+
+AUTH_USER_MODEL = 'simbrella_app.User'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

@@ -1,7 +1,5 @@
 from django.db import models
-
-# Create your models here.
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.core.validators import MinValueValidator
 import uuid
 
@@ -33,6 +31,15 @@ class User(AbstractUser):
     
     class Meta:
         db_table = 'users'
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    bio = models.TextField(blank=True, null=True)
+    avatar = models.URLField(blank=True, null=True)
+    date_of_birth = models.DateField(blank=True, null=True)
+    
+    def __str__(self):
+        return f"{self.user.email} Profile"
 
 class Wallet(models.Model):
     """Wallet model for managing user wallets"""

@@ -11,40 +11,27 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
-<<<<<<< HEAD
 from dotenv import load_dotenv
 import os
-=======
 
-load_dotenv
->>>>>>> dev
+# Load environment variables from .env file
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-<<<<<<< HEAD
 SECRET_KEY = os.getenv('SECRET_KEY')
-=======
-SECRET_KEY = 'django-insecure-5@4+3r)@=e+#m4k5a-^a*wck4#wk!mjc2i@*y0vx#gr(770zg('
->>>>>>> dev
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
 
-<<<<<<< HEAD
-ALLOWED_HOSTS = []
-=======
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
->>>>>>> dev
-
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -52,10 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',
-    'corsheaders',
-    'rest_framework_simplejwt',
-    'simbrella_app.apps.SimbrellaAppConfig'
+    'simbrella_app',  # Added to INSTALLED_APPS instead of MIDDLEWARE
 ]
 
 MIDDLEWARE = [
@@ -66,14 +50,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-<<<<<<< HEAD
-    'simbrella_app.apps.simbrella_appConfig'
-=======
-<<<<<<< Updated upstream
-=======
-    
->>>>>>> Stashed changes
->>>>>>> dev
 ]
 
 ROOT_URLCONF = 'backend.urls'
@@ -95,52 +71,20 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'backend.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-<<<<<<< HEAD
-"""DATABASES = {
-=======
-DATABASES = {
->>>>>>> dev
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-<<<<<<< HEAD
-}"""
-
-# database
-
-SECRET_KEY = os.getenv('SECRET_KEY')
-DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
-
-=======
-}
-
-
-<<<<<<< Updated upstream
-=======
->>>>>>> dev
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.environ.get('DB_NAME', 'simbrella_db'),
         'USER': os.environ.get('DB_USER', 'simbrella_user'),
-<<<<<<< HEAD
-        'PASSWORD': os.environ.get('DB_PASSWORD', 'your_password'),
-=======
-        'PASSWORD': os.environ.get('DB_PASSWORD', 'TheGameisM!ne2025!'),
->>>>>>> dev
+        'PASSWORD': os.environ.get('DB_PASSWORD', ''),
         'HOST': os.environ.get('DB_HOST', 'localhost'),
-        'PORT': os.environ.get('DB_PORT', '5432'),
+        'PORT': os.environ.get('DB_PORT', '5432'),  # Fixed port number
     }
 }
-<<<<<<< HEAD
-=======
->>>>>>> Stashed changes
->>>>>>> dev
+
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
@@ -159,7 +103,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
@@ -171,17 +114,11 @@ USE_I18N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
 
-<<<<<<< HEAD
-=======
-AUTH_USER_MODEL = 'simbrella_app.User'
-
->>>>>>> dev
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 

@@ -72,7 +72,7 @@ A secure, scalable financial transaction platform built with modern web technolo
 1. Clone the repository:
 ```bash
 git clone <repository-url>
-cd financial-platform
+cd simbrella-vault
 ```
 
 2. Create and activate virtual environment:

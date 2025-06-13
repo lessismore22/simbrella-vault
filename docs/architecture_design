@@ -1,0 +1,121 @@
+Simbrella-vault - Architecture Design
+Architecture Choice: Modular Monolith
+For this application, I recommend a modular monolith approach rather than microservices for the following reasons:
+Why Modular Monolith?
+
+Simplicity: Easier deployment and debugging for initial development
+Transaction Consistency: Financial transactions require ACID compliance, easier in monolith
+Performance: Lower latency for wallet operations without network calls
+Development Speed: Faster initial development and iteration
+Cost Effective: Single deployment reduces infrastructure costs
+
+High-Level Architecture
+┌─────────────────────────────────────────────────────────────┐
+│                    Load Balancer (Nginx)                    │
+└─────────────────────────────────────┬───────────────────────┘
+                                      │
+┌─────────────────────────────────────┼───────────────────────┐
+│              Frontend Layer          │                       │
+├─────────────────────────────────────┼───────────────────────┤
+│  Next.js App (Vercel/Netlify)      │  Admin Dashboard      │
+│  - User Interface                   │  - System Management  │
+│  - Wallet Management                │  - Analytics          │
+│  - Transaction History              │  - User Management    │
+└─────────────────────────────────────┼───────────────────────┘
+                                      │
+                                   API Gateway
+                                      │
+┌─────────────────────────────────────┼───────────────────────┐
+│              Backend API Layer       │                       │
+├─────────────────────────────────────┼───────────────────────┤
+│           Django REST API            │                       │
+│  ┌─────────────────────────────────┐ │                       │
+│  │        Auth Module              │ │                       │
+│  │  - JWT Authentication           │ │                       │
+│  │  - Role-based Access Control    │ │                       │
+│  │  - User Management              │ │                       │
+│  └─────────────────────────────────┘ │                       │
+│  ┌─────────────────────────────────┐ │                       │
+│  │       Wallet Module             │ │                       │
+│  │  - Wallet Creation/Management   │ │                       │
+│  │  - Balance Operations           │ │                       │
+│  │  - Multi-wallet Support         │ │                       │
+│  └─────────────────────────────────┘ │                       │
+│  ┌─────────────────────────────────┐ │                       │
+│  │    Transaction Engine           │ │                       │
+│  │  - Double-entry Bookkeeping     │ │                       │
+│  │  - Atomic Transfers             │ │                       │
+│  │  - Transaction History          │ │                       │
+│  └─────────────────────────────────┘ │                       │
+│  ┌─────────────────────────────────┐ │                       │
+│  │      Services Module            │ │                       │
+│  │  - Airtime/Data Payments        │ │                       │
+│  │  - Utility Bill Payments        │ │                       │
+│  │  - External API Integration     │ │                       │
+│  └─────────────────────────────────┘ │                       │
+│  ┌─────────────────────────────────┐ │                       │
+│  │     Analytics Module            │ │                       │
+│  │  - Spending Analysis            │ │                       │
+│  │  - Budget Tracking              │ │                       │
+│  │  - Reporting Engine             │ │                       │
+│  └─────────────────────────────────┘ │                       │
+└─────────────────────────────────────┼───────────────────────┘
+                                      │
+┌─────────────────────────────────────┼───────────────────────┐
+│              Data Layer              │                       │
+├─────────────────────────────────────┼───────────────────────┤
+│  PostgreSQL Database                │  Redis Cache          │
+│  - User Data                        │  - Session Storage    │
+│  - Wallet Information               │  - API Rate Limiting  │
+│  - Transaction Records              │  - Temporary Data     │
+│  - Audit Logs                       │                       │
+└─────────────────────────────────────┼───────────────────────┘
+                                      │
+┌─────────────────────────────────────┼───────────────────────┐
+│           Infrastructure             │                       │
+├─────────────────────────────────────┼───────────────────────┤
+│  Container Orchestration            │  Monitoring           │
+│  - Docker Containers                │  - Prometheus/Grafana │
+│  - Docker Compose (Dev)             │  - Application Logs   │
+│  - Kubernetes (Production)          │  - Error Tracking     │
+│                                     │                       │
+│  CI/CD Pipeline                     │  Security             │
+│  - GitHub Actions                   │  - SSL/TLS            │
+│  - Automated Testing                │  - Data Encryption    │
+│  - Deployment Automation            │  - Input Validation   │
+└─────────────────────────────────────┴───────────────────────┘
+Module Breakdown
+1. Authentication & Authorization Module
+
+JWT Token Management: Stateless authentication
+Role-Based Access Control: User, Admin, SuperAdmin roles
+OAuth2 Integration: Social login support
+Session Management: Secure session handling
+
+2. Wallet Management Module
+
+Multi-wallet Support: Personal, Business, Savings wallets
+Wallet Operations: Create, activate, deactivate, freeze
+Balance Management: Real-time balance updates
+Wallet Permissions: Shared access control
+
+3. Transaction Engine
+
+Double-entry Bookkeeping: Every transaction affects two accounts
+Atomic Operations: Database transactions for consistency
+Transaction Types: Transfer, deposit, withdrawal, payment
+Transaction States: Pending, completed, failed, reversed
+
+4. Services Integration Module
+
+Payment Gateways: Mock implementations for utilities
+External APIs: Airtime, data, electricity providers
+Service Management: Enable/disable services
+Transaction Routing: Direct payments to appropriate handlers
+
+5. Analytics & Reporting Module
+
+Spend Analysis: Category-wise spending patterns
+Budget Tracking: Monthly/weekly budget monitoring
+Financial Insights: Trends and recommendations
+Admin Analytics: System-wide usage statistics

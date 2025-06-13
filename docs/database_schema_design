@@ -1,0 +1,83 @@
+Database Schema Design
+Core Tables
+sql-- Users table
+CREATE TABLE users (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    email VARCHAR(255) UNIQUE NOT NULL,
+    phone_number VARCHAR(20) UNIQUE NOT NULL,
+    first_name VARCHAR(100) NOT NULL,
+    last_name VARCHAR(100) NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    role VARCHAR(20) DEFAULT 'user',
+    is_active BOOLEAN DEFAULT true,
+    email_verified BOOLEAN DEFAULT false,
+    phone_verified BOOLEAN DEFAULT false,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Wallets table
+CREATE TABLE wallets (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+    wallet_type VARCHAR(20) NOT NULL, -- personal, business, savings
+    wallet_name VARCHAR(100) NOT NULL,
+    balance DECIMAL(15,2) DEFAULT 0.00,
+    currency VARCHAR(3) DEFAULT 'NGN',
+    is_active BOOLEAN DEFAULT true,
+    is_frozen BOOLEAN DEFAULT false,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
+    CONSTRAINT positive_balance CHECK (balance >= 0)
+);
+
+-- Transactions table (Double-entry bookkeeping)
+CREATE TABLE transactions (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    reference VARCHAR(50) UNIQUE NOT NULL,
+    description TEXT,
+    amount DECIMAL(15,2) NOT NULL,
+    transaction_type VARCHAR(20) NOT NULL, -- transfer, deposit, withdrawal, payment
+    status VARCHAR(20) DEFAULT 'pending', -- pending, completed, failed, reversed
+    metadata JSONB,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Transaction entries (for double-entry)
+CREATE TABLE transaction_entries (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    transaction_id UUID REFERENCES transactions(id) ON DELETE CASCADE,
+    wallet_id UUID REFERENCES wallets(id),
+    entry_type VARCHAR(10) NOT NULL, -- debit, credit
+    amount DECIMAL(15,2) NOT NULL,
+    balance_before DECIMAL(15,2) NOT NULL,
+    balance_after DECIMAL(15,2) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Services table
+CREATE TABLE services (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    service_name VARCHAR(100) NOT NULL,
+    service_type VARCHAR(50) NOT NULL, -- airtime, data, electricity
+    provider VARCHAR(100) NOT NULL,
+    is_active BOOLEAN DEFAULT true,
+    api_endpoint VARCHAR(255),
+    configuration JSONB,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Audit logs
+CREATE TABLE audit_logs (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID REFERENCES users(id),
+    action VARCHAR(100) NOT NULL,
+    resource_type VARCHAR(50),
+    resource_id UUID,
+    old_values JSONB,
+    new_values JSONB,
+    ip_address INET,
+    user_agent TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP

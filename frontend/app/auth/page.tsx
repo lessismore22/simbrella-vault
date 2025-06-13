@@ -38,7 +38,7 @@ export default function AuthPage() {
             </div>
           </div>
           <h1 className="text-2xl font-bold bg-gradient-to-r from-emerald-600 to-blue-600 bg-clip-text text-transparent">
-            Welcome to FinWallet
+            Welcome to Simbrella-vault
           </h1>
           <p className="text-gray-600 mt-2">Your journey to financial freedom starts here</p>
         </div>
